@@ -2,15 +2,21 @@ import 'dart:async';
 import 'dart:io';
 
 import './file_utils.dart';
+import 'package:xml/xml.dart';
+import './utils.dart';
+import './constants.dart';
 
 class AndroidRenameSteps {
   final String newPackageName;
   String? oldPackageName;
 
   static const String PATH_BUILD_GRADLE = 'android/app/build.gradle';
-  static const String PATH_MANIFEST = 'android/app/src/main/AndroidManifest.xml';
-  static const String PATH_MANIFEST_DEBUG = 'android/app/src/debug/AndroidManifest.xml';
-  static const String PATH_MANIFEST_PROFILE = 'android/app/src/profile/AndroidManifest.xml';
+  static const String PATH_MANIFEST =
+      'android/app/src/main/AndroidManifest.xml';
+  static const String PATH_MANIFEST_DEBUG =
+      'android/app/src/debug/AndroidManifest.xml';
+  static const String PATH_MANIFEST_PROFILE =
+      'android/app/src/profile/AndroidManifest.xml';
 
   static const String PATH_ACTIVITY = 'android/app/src/main/';
 
@@ -19,16 +25,19 @@ class AndroidRenameSteps {
   Future<void> process() async {
     print("Running for android");
     if (!await File(PATH_BUILD_GRADLE).exists()) {
-      print('ERROR:: build.gradle file not found, Check if you have a correct android directory present in your project'
+      print(
+          'ERROR:: build.gradle file not found, Check if you have a correct android directory present in your project'
           '\n\nrun " flutter create . " to regenerate missing files.');
       return;
     }
     String? contents = await readFileAsString(PATH_BUILD_GRADLE);
 
-    var reg = RegExp(r'applicationId\s*=?\s*"(.*)"', caseSensitive: true, multiLine: false);
+    var reg = RegExp(r'applicationId\s*=?\s*"(.*)"',
+        caseSensitive: true, multiLine: false);
     var match = reg.firstMatch(contents!);
-    if(match == null) {
-      print('ERROR:: applicationId not found in build.gradle file, Please file an issue on github with $PATH_BUILD_GRADLE file attached.');
+    if (match == null) {
+      print(
+          'ERROR:: applicationId not found in build.gradle file, Please file an issue on github with $PATH_BUILD_GRADLE file attached.');
       return;
     }
     var name = match.group(1);
@@ -116,7 +125,7 @@ class AndroidRenameSteps {
   }
 
   Future<List<FileSystemEntity>> dirContents(Directory dir) {
-    if(!dir.existsSync()) return Future.value([]);
+    if (!dir.existsSync()) return Future.value([]);
     var files = <FileSystemEntity>[];
     var completer = Completer<List<FileSystemEntity>>();
     var lister = dir.list(recursive: true);
@@ -124,5 +133,24 @@ class AndroidRenameSteps {
         // should also register onError
         onDone: () => completer.complete(files));
     return completer.future;
+  }
+
+  static Future<void> updateLauncherName(String newName) async {
+    if (newName.trim().isEmpty) {
+      Utils.logError('Launcher name cannot be empty');
+      return;
+    }
+
+    print('Updating Android launcher name...');
+
+    try {
+      await Utils.updateAndroidManifestLabel(ANDROID_MANIFEST_PATH, newName);
+      await Utils.updateAndroidManifestLabel(ANDROID_MANIFEST_DEBUG, newName);
+      await Utils.updateAndroidManifestLabel(ANDROID_MANIFEST_PROFILE, newName);
+
+      Utils.logSuccess('Finished updating Android launcher name');
+    } catch (e) {
+      Utils.logError('Failed to update Android launcher name: $e');
+    }
   }
 }

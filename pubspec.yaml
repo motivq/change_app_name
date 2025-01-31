@@ -1,8 +1,13 @@
-name: change_app_package_name
-description: Change App Package Name with single command. Update AndroidManifest, build.gradle, MainActivity files & move MainActivity file to new directory structure automatically.
-version: 1.4.0
-maintainer: Atiq Samtia (@AtiqSamtia)
-homepage: https://github.com/atiqsamtia/change_app_package_name
+name: change_app_name
+description: Change App Package Name & Launcher Name with single command.
+version: 1.0.0
+maintainer: Gilbert Mena (@hibrid)
+homepage: https://github.com/motivq/change_app_name
 
 environment:
   sdk: '>=2.12.0 <4.0.0'
+dependencies:
+  xml: ^6.5.0
+dev_dependencies:
+  test: ^1.25.14
+  mockito: ^5.4.5

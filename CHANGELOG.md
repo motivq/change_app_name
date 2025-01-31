@@ -1,3 +1,28 @@
+## [1.0.0] - (March 15, 2024)
+
+This is a fork of [change_app_package_name](https://github.com/atiqsamtia/change_app_package_name) with significant enhancements:
+
+### Added
+- Support for changing app launcher display name
+- Named arguments for better command clarity
+- Ability to change both package name and launcher name in a single command
+- Support for all iOS Info.plist variants (main, debug, release)
+- Improved error handling and user feedback with emoji indicators
+- Comprehensive test suite
+
+### Changed
+- Migrated to XML parsing for more reliable file updates
+- Improved handling of missing files and error conditions
+- Enhanced logging with clear success/warning/error indicators
+- Updated documentation with detailed usage examples
+
+### Maintained
+- Backward compatibility with original command format
+- Support for platform-specific updates (Android/iOS)
+- All original package name changing functionality
+
+## Previous Versions (Original Package)
+
 ## [1.4.0] - (September 20, 2024)
 
 * Specify which platform they want to rename the package for. Thanks [@moha-b](moha-b) #43
